@@ -15,5 +15,6 @@ Imports:
   data.table,
   lubridate,
   stringi,
-  stringr
+  stringr,
+  tidyr
 RoxygenNote: 7.2.1
