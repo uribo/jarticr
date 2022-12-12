@@ -15,7 +15,8 @@ read_jartic_traffic <- function(path) {
                                    "integer","integer", "integer", "character", "integer"),
                     col.names = c("datetime", "source_code", "location_no", "location_name",
                                   "meshcode10km", "link_type", "link_no", "traffic",
-                                  "to_link_end_10m", "link_ver"))
+                                  "to_link_end_10m", "link_ver"),
+                    na.strings = c("", "NA"))
   d[ , c("datetime", "location_name") := list(lubridate::ymd_hm(datetime, tz = "Asia/Tokyo"),
                                               stringi::stri_trans_nfkc(
                                                 stringr::str_squish(
