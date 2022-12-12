@@ -17,4 +17,4 @@ Imports:
   stringi,
   stringr,
   tidyr
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
