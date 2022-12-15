@@ -27,3 +27,19 @@ read_jartic_traffic <- function(path) {
   data.table::setkey(d, "datetime")
   d
 }
+
+arrow_schema <- list(
+  typeB = arrow::schema(
+    datetime = arrow::timestamp(unit = "ms", timezone = "Asia/Tokyo"),
+    source_code = arrow::utf8(),
+    location_no = arrow::int32(),
+    location_name = arrow::utf8(),
+    meshcode10km = arrow::utf8(),
+    link_type = arrow::int32(),
+    link_no = arrow::int32(),
+    traffic = arrow::int32(),
+    to_link_end_10m = arrow::utf8(),
+    link_ver = arrow::int32(),
+    year = arrow::int32(),
+    month = arrow::int32())
+)
