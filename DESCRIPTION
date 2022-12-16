@@ -12,7 +12,6 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-  arrow,
   data.table,
   lubridate,
   stringi,
