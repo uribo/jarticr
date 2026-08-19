@@ -2,3 +2,17 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^data-raw$
+^\.DS_Store$
+^\.github$
+^\.vscode$
+^\.claude$
+^\.codex$
+^CLAUDE\.md$
+^AGENTS\.md$
+^memory$
+^[.]?air[.]toml$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^cran-comments\.md$
+^CRAN-SUBMISSION$

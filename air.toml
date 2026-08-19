@@ -1,0 +1,3 @@
+# air configuration -- https://posit-dev.github.io/air/
+[format]
+line-width = 80
