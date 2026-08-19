@@ -1,22 +1,34 @@
 Package: jarticr
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Read and Tidy Japan Road Traffic Information Center Open Data
 Version: 0.0.0.9000
 Authors@R: c(
-    person(given = "Shinya", family = "Uryu", email = "suika1127@gmail.com", role  = c("aut", "cre"), comment = c(ORCID = "0000-0002-0493-6186"))
+    person(given = "Shinya", family = "Uryu", email = "suika1127@gmail.com", role = c("aut", "cph", "cre"), comment = c(ORCID = "0000-0002-0493-6186"))
     )
-Maintainer: Shinya Uryu <suika1127@gmail.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Reads the cross-sectional traffic volume files ("type B" open
+    data) published by the Japan Road Traffic Information Center (JARTIC,
+    <https://www.jartic.or.jp>) and returns them as tidy tables. The raw files
+    are distributed per prefecture as CP932-encoded CSV without a header row;
+    this package handles the encoding, column naming and type conversion, and
+    provides helpers to derive an observation-location table and to look up the
+    data providers.
 License: MIT + file LICENSE
+URL: https://uribo.github.io/jarticr/, https://github.com/uribo/jarticr
+BugReports: https://github.com/uribo/jarticr/issues
 Encoding: UTF-8
 LazyData: true
-Imports:
-  data.table,
-  lubridate,
-  stringi,
-  stringr,
-  tidyr
-RoxygenNote: 7.2.3
+ByteCompile: true
 Depends: 
     R (>= 2.10)
+Imports:
+    data.table,
+    lubridate,
+    stringi,
+    stringr,
+    tidyr
+Suggests:
+    testthat (>= 3.0.0),
+    tibble,
+    usethis
+Config/testthat/edition: 3
+RoxygenNote: 7.2.3

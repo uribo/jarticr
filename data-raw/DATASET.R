@@ -104,6 +104,8 @@ jartic_provider <-
       "oita",
       "miyazaki",
       "kagoshima",
-      "okinawa"))
+      "okinawa"
+    )
+  )
 
 usethis::use_data(jartic_provider, overwrite = TRUE)

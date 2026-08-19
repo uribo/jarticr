@@ -1,0 +1,25 @@
+# Project-local Codex defaults. Applied only when this repository is trusted.
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
+
+# Keep credentials out of model-initiated child processes. R_ENVIRON_USER also
+# prevents R from automatically loading the gitignored project credential file.
+#
+# That suppression has a side effect worth naming: R treats the working
+# directory's credential file as the *user* Renviron, so pointing
+# R_ENVIRON_USER at /dev/null disables the project's copy too -- including any
+# LC_COLLATE pin it carries. LC_COLLATE is therefore set here as well, so agent
+# sessions sort strings the same way a human terminal does.
+[shell_environment_policy]
+inherit = "core"
+ignore_default_excludes = false
+exclude = [
+  "*_API_KEY",
+  "*_TOKEN",
+  "*_SECRET",
+  "*_PASSWORD",
+  "AWS_*",
+  "AZURE_*",
+  "GOOGLE_APPLICATION_CREDENTIALS",
+]
+set = { R_ENVIRON_USER = "/dev/null", LC_COLLATE = "C" }

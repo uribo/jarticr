@@ -1,4 +1,31 @@
+# --- R session / credentials ---
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+.Renviron
+.env
+.DS_Store
+
+# --- editor: .vscode is tracked ON PURPOSE ---
+# A user-level global gitignore commonly ignores .vscode; this re-include
+# overrides it so the workspace formatter policy and extension
+# recommendations travel with the repository. Keep the contents limited to
+# workflow settings -- no personal preferences such as themes or fonts.
+!.vscode/
+
+# --- Claude Code local state ---
+.claude/settings.local.json
+.claude/agent-memory/
+CLAUDE.local.md
+
+# --- package build artefacts ---
+inst/doc
+docs/
+*.tar.gz
+*.Rcheck/
+
+# --- raw JARTIC downloads (large; redistribute from the source, not here) ---
+data-raw/*.csv
+data-raw/*.zip
+data-raw/typeB/
