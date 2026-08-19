@@ -3,19 +3,23 @@
 \docType{data}
 \name{jartic_provider}
 \alias{jartic_provider}
-\title{Jartic data provider}
+\title{JARTIC data providers}
 \format{
-A tibble with 51 rows 2 variables:
-\itemize{
-  \item{name: prefecture}
-  \item{name_en: roman}
+A tibble with 51 rows and 2 variables:
+\describe{
+\item{name}{Provider name in Japanese.}
+\item{name_en}{Provider name in roman letters, as used in file paths.}
 }
+}
+\source{
+\url{https://www.jartic.or.jp/service/opendata/}
 }
 \usage{
 jartic_provider
 }
 \description{
-data provider list
+The organisations that publish JARTIC open data: the 47 prefectures, with
+Hokkaido split into its 5 police headquarters areas.
 }
 \examples{
 jartic_provider

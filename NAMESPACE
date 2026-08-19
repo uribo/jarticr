@@ -2,9 +2,11 @@
 
 export(jartic_type_b_loc_tiny)
 export(read_jartic_traffic)
-importFrom(data.table,`:=`)
-importFrom(data.table,fread)
-importFrom(data.table,setkey)
+importFrom(data.table,
+  `:=`,
+  fread,
+  setkey
+)
 importFrom(lubridate,ymd_hm)
 importFrom(stringi,stri_trans_nfkc)
 importFrom(stringr,str_squish)

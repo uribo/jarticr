@@ -54,7 +54,7 @@ jarticr/
 Rscript -e 'roxygen2::roxygenise()'
 ```
 
-roxygen2 のバージョンを上げて再生成すると `DESCRIPTION` の `RoxygenNote` も動く。**再生成なしに `RoxygenNote` だけ書き換えない**（`man/` の内容と食い違う）。
+roxygen2 8.x はバージョンを `DESCRIPTION` の `Config/roxygen2/version` に記録する（7.x までの `RoxygenNote` は書かれない）。**再生成なしにこのフィールドだけ書き換えない**（`man/` の内容と食い違う）。roxygen コメントは markdown 記法で書く（`Roxygen: list(markdown = TRUE)`）。
 
 ### データとフィクスチャ
 
