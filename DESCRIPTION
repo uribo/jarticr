@@ -31,4 +31,5 @@ Suggests:
     tibble,
     usethis
 Config/testthat/edition: 3
-RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.1.0

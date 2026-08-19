@@ -2,13 +2,24 @@
 % Please edit documentation in R/location.R
 \name{jartic_type_b_loc_tiny}
 \alias{jartic_type_b_loc_tiny}
-\title{Create location table for type B}
+\title{Create the observation location table for type B}
 \usage{
 jartic_type_b_loc_tiny(data)
 }
 \arguments{
-\item{data}{type B data}
+\item{data}{A type B table, as returned by \code{\link[=read_jartic_traffic]{read_jartic_traffic()}}.}
+}
+\value{
+A table of unique locations with \code{source_code}, \code{location_no},
+\code{location_from}, \code{location_to} and \code{meshcode10km}.
 }
 \description{
-Create location table for type B
+Reduces a type B table to one row per observation location and splits
+\code{location_name} into its start and end points on the arrow separator.
+}
+\examples{
+d <- read_jartic_traffic(
+  system.file("dummy", "type_b.csv", package = "jarticr")
+)
+jartic_type_b_loc_tiny(d)
 }
