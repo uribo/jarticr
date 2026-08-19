@@ -16,6 +16,9 @@ permissions: read-all
 jobs:
   pkgdown:
     runs-on: ubuntu-latest
+    # See the note in R-CMD-check.yaml: bound the job so a stalled setup-r
+    # fails fast instead of running against the 6 hour default.
+    timeout-minutes: 30
     # Only restrict concurrency for non-PR jobs
     concurrency:
       group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
