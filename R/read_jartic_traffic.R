@@ -7,6 +7,11 @@
 #' encoding, parses `datetime` in JST, and normalizes `location_name` with
 #' NFKC.
 #'
+#' @details
+#' Bytes that are not valid CP932 cannot be decoded and leave `NA` in
+#' `location_name`. That is reported with a warning rather than passed on
+#' silently, because the rest of the row still looks intact.
+#'
 #' @param path Path to a raw type B file (CSV format).
 #' @importFrom data.table `:=` fread setkey
 #' @importFrom lubridate ymd_hm
@@ -33,9 +38,11 @@
 #' )
 #' @export
 read_jartic_traffic <- function(path) {
-  datetime <- location_name <- NULL
+  datetime <- NULL
   d <- data.table::fread(
     path,
+    # The format has no header row; do not let fread guess one away.
+    header = FALSE,
     colClasses = c(
       "character",
       "character",
@@ -63,14 +70,22 @@ read_jartic_traffic <- function(path) {
     na.strings = c("", "NA"),
     fill = TRUE
   )
+  raw_name <- d[["location_name"]]
+  decoded <- iconv(raw_name, from = "cp932", to = "UTF-8")
+  undecodable <- sum(is.na(decoded) & !is.na(raw_name))
+  if (undecodable > 0L) {
+    warning(
+      sprintf(
+        "%d location_name value(s) are not valid CP932 and became NA.",
+        undecodable
+      ),
+      call. = FALSE
+    )
+  }
   d[,
     c("datetime", "location_name") := list(
       lubridate::ymd_hm(datetime, tz = "Asia/Tokyo"),
-      stringi::stri_trans_nfkc(
-        stringr::str_squish(
-          iconv(location_name, from = "cp932", to = "utf8")
-        )
-      )
+      stringi::stri_trans_nfkc(stringr::str_squish(decoded))
     )
   ]
   data.table::setkey(d, "datetime")

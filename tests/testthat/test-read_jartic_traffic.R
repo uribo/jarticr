@@ -60,3 +60,32 @@ test_that("read_jartic_traffic() keeps an empty traffic field as NA", {
   expect_true(is.na(d$traffic[[4]]))
   expect_equal(sum(is.na(d$traffic)), 1L)
 })
+
+test_that("read_jartic_traffic() keeps the first row of a headerless file", {
+  path <- tempfile(fileext = ".csv")
+  on.exit(unlink(path), add = TRUE)
+  writeLines("202211010000,36,1,AAA,513376,1,101,120,0050,1", path)
+
+  d <- read_jartic_traffic(path)
+
+  expect_equal(nrow(d), 1L)
+  expect_identical(d$to_link_end_10m, "0050")
+})
+
+test_that("read_jartic_traffic() warns when location_name is not CP932", {
+  path <- tempfile(fileext = ".csv")
+  on.exit(unlink(path), add = TRUE)
+  con <- file(path, open = "wb")
+  writeBin(
+    c(
+      charToRaw("202211010000,36,1,"),
+      as.raw(c(0x81, 0x20)), # a lead byte with no valid trail byte
+      charToRaw(",513376,1,101,120,0050,1\n")
+    ),
+    con
+  )
+  close(con)
+
+  expect_warning(d <- read_jartic_traffic(path), "not valid CP932")
+  expect_true(is.na(d$location_name))
+})

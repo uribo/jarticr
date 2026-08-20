@@ -32,6 +32,11 @@ CP932-encoded; this function supplies the column names, converts the
 encoding, parses \code{datetime} in JST, and normalizes \code{location_name} with
 NFKC.
 }
+\details{
+Bytes that are not valid CP932 cannot be decoded and leave \code{NA} in
+\code{location_name}. That is reported with a warning rather than passed on
+silently, because the rest of the row still looks intact.
+}
 \examples{
 read_jartic_traffic(
   system.file("dummy", "type_b.csv", package = "jarticr")
