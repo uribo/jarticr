@@ -63,6 +63,12 @@ A `data.table` of 10 columns, keyed on `datetime`:
 
   Link version.
 
+## Details
+
+Bytes that are not valid CP932 cannot be decoded and leave `NA` in
+`location_name`. That is reported with a warning rather than passed on
+silently, because the rest of the row still looks intact.
+
 ## Examples
 
 ``` r

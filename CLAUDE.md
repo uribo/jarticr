@@ -63,9 +63,9 @@
 - モダン tidyverse パターンを優先し superseded
   パターンを避ける。**ただし本パッケージの戻り値は `data.table`
   であることが公開 API
-  の一部**なので、[`tidyr::separate()`](https://tidyr.tidyverse.org/reference/separate.html)
-  → `separate_wider_delim()`
-  のような置き換えは戻り値のクラスを変える。破壊的変更として別途扱う（下記「既知の課題」）
+  の一部**なので、置き換えの際は戻り値のクラスが変わらないことを必ず確認する（tidyr
+  の関数は data.table を plain `data.frame`
+  に落とす）。クラスが変わるなら破壊的変更として別途扱う
 
 ### 生成物を手で編集しない
 
@@ -184,14 +184,6 @@ Rscript data-raw/dummy_typeB.R
 
 コードの挙動を変える変更なので、着手前にユーザーへ確認する。
 
-- [`jartic_type_b_loc_tiny()`](https://uribo.github.io/jarticr/reference/jartic_type_b_loc_tiny.md)
-  は superseded な
-  [`tidyr::separate()`](https://tidyr.tidyverse.org/reference/separate.html)
-  を使っている。`separate_wider_delim()` へ移すと戻り値が `data.table`
-  から `tbl_df` に変わる（破壊的変更）
-- `location_name` に `→`
-  が無い行の挙動が未定義（[`tidyr::separate()`](https://tidyr.tidyverse.org/reference/separate.html)
-  の警告任せ）
 - type
   A（旅行時間情報）には未対応。[`read_jartic_traffic()`](https://uribo.github.io/jarticr/reference/read_jartic_traffic.md)
   は type B 専用

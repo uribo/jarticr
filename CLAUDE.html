@@ -85,7 +85,7 @@
 </li>
 <li>roxygen2 の <code>@importFrom</code> で宣言した関数のみ、プレフィックスなしで使ってよい</li>
 <li>変数名は英語のみ。コメント・ドキュメント・コミットメッセージは英語</li>
-<li>モダン tidyverse パターンを優先し superseded パターンを避ける。<strong>ただし本パッケージの戻り値は <code>data.table</code> であることが公開 API の一部</strong>なので、<code><a href="https://tidyr.tidyverse.org/reference/separate.html" class="external-link">tidyr::separate()</a></code> → <code>separate_wider_delim()</code> のような置き換えは戻り値のクラスを変える。破壊的変更として別途扱う（下記「既知の課題」）</li>
+<li>モダン tidyverse パターンを優先し superseded パターンを避ける。<strong>ただし本パッケージの戻り値は <code>data.table</code> であることが公開 API の一部</strong>なので、置き換えの際は戻り値のクラスが変わらないことを必ず確認する（tidyr の関数は data.table を plain <code>data.frame</code> に落とす）。クラスが変わるなら破壊的変更として別途扱う</li>
 </ul></div>
 <div class="section level3">
 <h3 id="生成物を手で編集しない">生成物を手で編集しない<a class="anchor" aria-label="anchor" href="#%E7%94%9F%E6%88%90%E7%89%A9%E3%82%92%E6%89%8B%E3%81%A7%E7%B7%A8%E9%9B%86%E3%81%97%E3%81%AA%E3%81%84"></a></h3>
@@ -175,11 +175,7 @@ chore(deps): move tibble to Suggests</code></pre>
 <div class="section level2">
 <h2 id="既知の課題">既知の課題<a class="anchor" aria-label="anchor" href="#%E6%97%A2%E7%9F%A5%E3%81%AE%E8%AA%B2%E9%A1%8C"></a></h2>
 <p>コードの挙動を変える変更なので、着手前にユーザーへ確認する。</p>
-<ul><li>
-<code><a href="reference/jartic_type_b_loc_tiny.html">jartic_type_b_loc_tiny()</a></code> は superseded な <code><a href="https://tidyr.tidyverse.org/reference/separate.html" class="external-link">tidyr::separate()</a></code> を使っている。<code>separate_wider_delim()</code> へ移すと戻り値が <code>data.table</code> から <code>tbl_df</code> に変わる（破壊的変更）</li>
-<li>
-<code>location_name</code> に <code>→</code> が無い行の挙動が未定義（<code><a href="https://tidyr.tidyverse.org/reference/separate.html" class="external-link">tidyr::separate()</a></code> の警告任せ）</li>
-<li>type A（旅行時間情報）には未対応。<code><a href="reference/read_jartic_traffic.html">read_jartic_traffic()</a></code> は type B 専用</li>
+<ul><li>type A（旅行時間情報）には未対応。<code><a href="reference/read_jartic_traffic.html">read_jartic_traffic()</a></code> は type B 専用</li>
 <li>arrow スキーマ対応は一度入れて revert された（<code>dfdd6e9</code> → <code>8e7f3a6</code>）。再導入するなら <code>arrow</code> は <code>Suggests</code> に置き、無い環境でスキップできる形にする</li>
 </ul></div>
 <div class="section level2">

@@ -55,9 +55,18 @@ location_name into its start and end points on the arrow separator."></head><bod
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A table of unique locations with <code>source_code</code>, <code>location_no</code>,
+    <p>A <code>data.table</code> of unique locations with <code>source_code</code>, <code>location_no</code>,
 <code>location_from</code>, <code>location_to</code> and <code>meshcode10km</code>.</p>
     </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The name is split on the <em>first</em> arrow (\U{2192}) only, which makes
+the result well defined for every value:</p><ul><li><p>no arrow: the whole name stays in <code>location_from</code> and <code>location_to</code> is
+<code>NA</code>;</p></li>
+<li><p>more than one arrow: everything after the first arrow is kept in
+<code>location_to</code>, so no part of the original name is discarded;</p></li>
+<li><p><code>NA</code>: both columns are <code>NA</code>.</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -65,9 +74,10 @@ location_name into its start and end points on the arrow separator."></head><bod
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"dummy"</span>, <span class="st">"type_b.csv"</span>, package <span class="op">=</span> <span class="st">"jarticr"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">jartic_type_b_loc_tiny</span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   source_code location_no location_from location_to meshcode10km</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1          36           1      徳島駅前      県庁前       513376</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          36           2   APAホテル前        南口       513376</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    source_code location_no location_from location_to meshcode10km</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         &lt;char&gt;       &lt;int&gt;        &lt;char&gt;      &lt;char&gt;       &lt;char&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:          36           1      徳島駅前      県庁前       513376</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:          36           2   APAホテル前        南口       513376</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

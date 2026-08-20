@@ -37,7 +37,9 @@
 <ul><li>
 <code><a href="../reference/read_jartic_traffic.html">read_jartic_traffic()</a></code> reads a JARTIC type B (cross-sectional traffic volume) CSV file, converting it from CP932 and returning a <code>data.table</code> keyed on <code>datetime</code> (JST).</li>
 <li>
-<code><a href="../reference/jartic_type_b_loc_tiny.html">jartic_type_b_loc_tiny()</a></code> derives the observation-location table by splitting <code>location_name</code> into <code>location_from</code> / <code>location_to</code>.</li>
+<code><a href="../reference/jartic_type_b_loc_tiny.html">jartic_type_b_loc_tiny()</a></code> derives the observation-location table by splitting <code>location_name</code> into <code>location_from</code> / <code>location_to</code>. The split happens on the first arrow only and returns a <code>data.table</code>, so the class matches the rest of the API; names without an arrow keep the whole value in <code>location_from</code>, and names with more than one arrow keep the remainder in <code>location_to</code> instead of discarding it. This drops the <code>tidyr</code> dependency.</li>
+<li>
+<code><a href="../reference/read_jartic_traffic.html">read_jartic_traffic()</a></code> now warns instead of staying silent when bytes in <code>location_name</code> are not valid CP932 and decode to <code>NA</code>.</li>
 <li>
 <code>jartic_provider</code> records the 51 JARTIC data providers (47 prefectures, with Hokkaido split into its 5 police headquarters areas).</li>
 </ul></div>
