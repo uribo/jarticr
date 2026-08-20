@@ -1,10 +1,10 @@
 # Read a JARTIC type B traffic file
 
 Reads one cross-sectional traffic volume ("type B") CSV file published
-by the Japan Road Traffic Information Center. The files are headerless
-and CP932-encoded; this function supplies the column names, converts the
-encoding, parses `datetime` in JST, and normalizes `location_name` with
-NFKC.
+by the Japan Road Traffic Information Center. The files are
+CP932-encoded and carry a header row; this function drops that row,
+supplies stable column names, parses `datetime` in JST, and normalizes
+`location_name` with NFKC.
 
 ## Usage
 
@@ -56,18 +56,33 @@ A `data.table` of 10 columns, keyed on `datetime`:
 
 - to_link_end_10m:
 
-  Distance to the link end, in units of 10 m. Kept as character because
-  the values are zero-padded.
+  Distance to the link end, in units of 10 m. Kept as character so that
+  whatever the source writes – padding included – survives the read.
 
 - link_ver:
 
-  Link version.
+  Link version; `NA` for files published before 2018-02.
 
 ## Details
 
+The published layout has changed over time, so the header row is
+inspected before the file is read:
+
+- Files from 2018-02 onwards have 10 columns. Earlier files have 9 and
+  no `link_ver`; for those, `link_ver` is filled with `NA` so that the
+  returned columns are the same in either case.
+
+- A file whose first row is already an observation (no header) is read
+  in full; the first row is not consumed as a header.
+
+- `datetime` is written as `2026/06/01 00:00` by most providers, but the
+  pre-2018-02 files also use `2017/8/1 0:00:00`. Both are parsed, and
+  values that survive as `NA` are reported with a warning rather than
+  passed on silently.
+
 Bytes that are not valid CP932 cannot be decoded and leave `NA` in
-`location_name`. That is reported with a warning rather than passed on
-silently, because the rest of the row still looks intact.
+`location_name`. That is reported with a warning too, because the rest
+of the row still looks intact.
 
 ## Examples
 
@@ -84,8 +99,8 @@ read_jartic_traffic(
 #> 4: 2022-11-01 01:00:00          36           2 APAホテル前→南口       513376
 #>    link_type link_no traffic to_link_end_10m link_ver
 #>        <int>   <int>   <int>          <char>    <int>
-#> 1:         1     101     120            0050        1
-#> 2:         1     102      45            0120        1
-#> 3:         1     101      80            0050        1
-#> 4:         1     102      NA            0120        1
+#> 1:         1     101     120            0050   202200
+#> 2:         1     102      45            0120   202200
+#> 3:         1     101      80            0050   202200
+#> 4:         1     102      NA            0120   202200
 ```

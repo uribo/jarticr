@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Read and Tidy Japan Road Traffic Information Center Open Data">
-<meta name="description" content='Reads the cross-sectional traffic volume files ("type B" open data) published by the Japan Road Traffic Information Center (JARTIC, &lt;https://www.jartic.or.jp&gt;) and returns them as tidy tables. The raw files are distributed per prefecture as CP932-encoded CSV without a header row; this package handles the encoding, column naming and type conversion, and provides helpers to derive an observation-location table and to look up the data providers.'>
-<meta property="og:description" content='Reads the cross-sectional traffic volume files ("type B" open data) published by the Japan Road Traffic Information Center (JARTIC, &lt;https://www.jartic.or.jp&gt;) and returns them as tidy tables. The raw files are distributed per prefecture as CP932-encoded CSV without a header row; this package handles the encoding, column naming and type conversion, and provides helpers to derive an observation-location table and to look up the data providers.'>
+<meta name="description" content='Reads the cross-sectional traffic volume files ("type B" open data) published by the Japan Road Traffic Information Center (JARTIC, &lt;https://www.jartic.or.jp&gt;) and returns them as tidy tables. The raw files are distributed per prefecture as CP932-encoded CSV whose layout has changed over the years; this package handles the encoding, the header row, the older nine-column layout, column naming and type conversion, and provides helpers to derive an observation-location table and to look up the data providers.'>
+<meta property="og:description" content='Reads the cross-sectional traffic volume files ("type B" open data) published by the Japan Road Traffic Information Center (JARTIC, &lt;https://www.jartic.or.jp&gt;) and returns them as tidy tables. The raw files are distributed per prefecture as CP932-encoded CSV whose layout has changed over the years; this package handles the encoding, the header row, the older nine-column layout, column naming and type conversion, and provides helpers to derive an observation-location table and to look up the data providers.'>
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -52,7 +52,7 @@
 <!-- badges: start -->
 
 <p><a href="https://www.jartic.or.jp" class="external-link">日本道路交通情報センター（JARTIC）</a>が公開するオープンデータのうち、<strong>断面交通量情報（type B）</strong>を R で読み込むためのパッケージ。</p>
-<p>生データは都道府県別・月別の CP932 エンコーディングかつヘッダ行なしの CSV で配布される。<code><a href="reference/read_jartic_traffic.html">read_jartic_traffic()</a></code> が文字コード変換・列名付与・型変換をまとめて処理し、<code>data.table</code> を返す。</p>
+<p>生データは都道府県別・月別の CP932 エンコーディング CSV（ヘッダ行あり・CRLF）で配布される。<code><a href="reference/read_jartic_traffic.html">read_jartic_traffic()</a></code> が文字コード変換・列名付与・型変換をまとめて処理し、<code>data.table</code> を返す。配布形式は年月によって揺れており、2018 年 2 月より前のファイルは <code>link_ver</code>（リンクバージョン）を持たない 9 列で、日時の書式も提供元ごとに異なる。いずれも同じ 10 列の <code>data.table</code> として読み込める（9 列期の <code>link_ver</code> は <code>NA</code>）。</p>
 <div class="section level2">
 <h2 id="インストール">インストール<a class="anchor" aria-label="anchor" href="#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"></a>
 </h2>

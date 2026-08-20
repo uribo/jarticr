@@ -87,28 +87,52 @@ roxygen2 8.x はバージョンを `DESCRIPTION` の `Config/roxygen2/version`
 - `data/*.rda` は `data-raw/DATASET.R` から
   [`usethis::use_data()`](https://usethis.r-lib.org/reference/use_data.html)
   で生成する
-- `inst/dummy/type_b.csv` は `data-raw/dummy_typeB.R`
-  から生成する。**CP932 バイト列なので手で編集しない**。UTF-8
-  で書き直すと
+- `inst/dummy/type_b.csv`（10 列・現行）と
+  `inst/dummy/type_b_9col.csv`（9 列・2018-02 より前）は
+  `data-raw/dummy_typeB.R` から生成する。**CP932
+  バイト列なので手で編集しない**。UTF-8 で書き直すと
   [`read_jartic_traffic()`](https://uribo.github.io/jarticr/reference/read_jartic_traffic.md)
   の `iconv(from = "cp932")`
-  が地点名を文字化けさせ、テストが無意味な値を検証する状態になる
+  が地点名を文字化けさせ、テストが無意味な値を検証する状態になる。実データに合わせてヘッダ行と
+  CRLF を持たせてある
 - 生の JARTIC データ（都道府県別 CSV /
   ZIP）はコミットしない。`.gitignore` で除外済み
+
+## type B の配布形式（実データで確認済み）
+
+前提を推測で書かない。以下は 2017-08 の全 51 提供元と
+2026-06（徳島）の実ファイルを走査して確認した事実。
+
+| 項目 | 2018-02 より前 | 2018-02 以降 |
+|----|----|----|
+| ヘッダ行 | あり（`時刻,…,リンク終端からの距離(10m)`） | あり（`時刻,…,リンク終端からの距離（×10m）,リンクバージョン`） |
+| 列数 | 9（`link_ver` なし） | 10 |
+| 日時 | `2017/8/1 0:00:00` と `2017/08/01 00:05` が提供元ごとに混在（2017-08 は 40 : 11） | `2026/06/01 00:00` |
+| 改行 | CRLF | CRLF |
+
+**ヘッダ行は全期間で存在する**。`fread(header = FALSE)`
+を無条件に渡すとヘッダが観測値として混入し、現行月のファイルすら読めない（[\#3](https://github.com/uribo/jarticr/issues/3)）。[`read_jartic_traffic()`](https://uribo.github.io/jarticr/reference/read_jartic_traffic.md)
+は先頭行の 1 行目だけを読んで「ヘッダの有無」と「列数」を判定し、`skip`
+と `colClasses` / `col.names` を切り替える。9 列期は `link_ver` を
+`NA_integer_` で補い、**戻り値は常に 10 列**に保つ。
 
 ## テスト
 
 - testthat 3rd edition（`Config/testthat/edition: 3`）
 - フィクスチャのパスは `tests/testthat/helper-fixture.R` の
-  `type_b_fixture()`
+  `type_b_fixture()` / `type_b_9col_fixture()`
   経由で取る（[`system.file()`](https://rdrr.io/r/base/system.file.html)
   を各テストに散らさない）
 - 検証は「読み込みの契約」に集中する:
   列名・列の型・タイムゾーン・キー・欠測の扱い・CP932 と NFKC
   の正規化結果
-- **ゼロ埋め識別子（`to_link_end_10m` 等）が character
+- **`to_link_end_10m` が character
   のままであること**を必ず検証する。integer
-  に落ちるとゼロが消え、静かにデータが壊れる
+  に落とすと元の表記（ゼロ埋め等）が失われ、静かにデータが壊れる。なお
+  2017-08 / 2026-06
+  の実データを走査した範囲ではゼロ埋めは観測されていない。それでも
+  character を保つのは、公開 API
+  の型であると同時に、表記の揺れを読み込み側で潰さないため
 
 ``` bash
 Rscript -e 'testthat::test_local()'

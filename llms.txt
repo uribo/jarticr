@@ -3,11 +3,13 @@
 [日本道路交通情報センター（JARTIC）](https://www.jartic.or.jp)が公開するオープンデータのうち、**断面交通量情報（type
 B）**を R で読み込むためのパッケージ。
 
-生データは都道府県別・月別の CP932 エンコーディングかつヘッダ行なしの
-CSV
-で配布される。[`read_jartic_traffic()`](https://uribo.github.io/jarticr/reference/read_jartic_traffic.md)
+生データは都道府県別・月別の CP932 エンコーディング
+CSV（ヘッダ行あり・CRLF）で配布される。[`read_jartic_traffic()`](https://uribo.github.io/jarticr/reference/read_jartic_traffic.md)
 が文字コード変換・列名付与・型変換をまとめて処理し、`data.table`
-を返す。
+を返す。配布形式は年月によって揺れており、2018 年 2 月より前のファイルは
+`link_ver`（リンクバージョン）を持たない 9
+列で、日時の書式も提供元ごとに異なる。いずれも同じ 10 列の `data.table`
+として読み込める（9 列期の `link_ver` は `NA`）。
 
 ## インストール
 

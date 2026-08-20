@@ -98,17 +98,38 @@
 <ul><li>
 <code>data/*.rda</code> は <code>data-raw/DATASET.R</code> から <code><a href="https://usethis.r-lib.org/reference/use_data.html" class="external-link">usethis::use_data()</a></code> で生成する</li>
 <li>
-<code>inst/dummy/type_b.csv</code> は <code>data-raw/dummy_typeB.R</code> から生成する。<strong>CP932 バイト列なので手で編集しない</strong>。UTF-8 で書き直すと <code><a href="reference/read_jartic_traffic.html">read_jartic_traffic()</a></code> の <code>iconv(from = "cp932")</code> が地点名を文字化けさせ、テストが無意味な値を検証する状態になる</li>
+<code>inst/dummy/type_b.csv</code>（10 列・現行）と <code>inst/dummy/type_b_9col.csv</code>（9 列・2018-02 より前）は <code>data-raw/dummy_typeB.R</code> から生成する。<strong>CP932 バイト列なので手で編集しない</strong>。UTF-8 で書き直すと <code><a href="reference/read_jartic_traffic.html">read_jartic_traffic()</a></code> の <code>iconv(from = "cp932")</code> が地点名を文字化けさせ、テストが無意味な値を検証する状態になる。実データに合わせてヘッダ行と CRLF を持たせてある</li>
 <li>生の JARTIC データ（都道府県別 CSV / ZIP）はコミットしない。<code>.gitignore</code> で除外済み</li>
 </ul></div>
 </div>
 <div class="section level2">
+<h2 id="type-b-の配布形式実データで確認済み">type B の配布形式（実データで確認済み）<a class="anchor" aria-label="anchor" href="#type-b-%E3%81%AE%E9%85%8D%E5%B8%83%E5%BD%A2%E5%BC%8F%E5%AE%9F%E3%83%87%E3%83%BC%E3%82%BF%E3%81%A7%E7%A2%BA%E8%AA%8D%E6%B8%88%E3%81%BF"></a></h2>
+<p>前提を推測で書かない。以下は 2017-08 の全 51 提供元と 2026-06（徳島）の実ファイルを走査して確認した事実。</p>
+<table class="table"><colgroup><col width="33%"><col width="33%"><col width="33%"></colgroup><thead><tr><th>項目</th>
+<th>2018-02 より前</th>
+<th>2018-02 以降</th>
+</tr></thead><tbody><tr><td>ヘッダ行</td>
+<td>あり（<code>時刻,…,リンク終端からの距離(10m)</code>）</td>
+<td>あり（<code>時刻,…,リンク終端からの距離（×10m）,リンクバージョン</code>）</td>
+</tr><tr><td>列数</td>
+<td>9（<code>link_ver</code> なし）</td>
+<td>10</td>
+</tr><tr><td>日時</td>
+<td>
+<code>2017/8/1 0:00:00</code> と <code>2017/08/01 00:05</code> が提供元ごとに混在（2017-08 は 40 : 11）</td>
+<td><code>2026/06/01 00:00</code></td>
+</tr><tr><td>改行</td>
+<td>CRLF</td>
+<td>CRLF</td>
+</tr></tbody></table><p><strong>ヘッダ行は全期間で存在する</strong>。<code>fread(header = FALSE)</code> を無条件に渡すとヘッダが観測値として混入し、現行月のファイルすら読めない（<a href="https://github.com/uribo/jarticr/issues/3" class="external-link">#3</a>）。<code><a href="reference/read_jartic_traffic.html">read_jartic_traffic()</a></code> は先頭行の 1 行目だけを読んで「ヘッダの有無」と「列数」を判定し、<code>skip</code> と <code>colClasses</code> / <code>col.names</code> を切り替える。9 列期は <code>link_ver</code> を <code>NA_integer_</code> で補い、<strong>戻り値は常に 10 列</strong>に保つ。</p>
+</div>
+<div class="section level2">
 <h2 id="テスト">テスト<a class="anchor" aria-label="anchor" href="#%E3%83%86%E3%82%B9%E3%83%88"></a></h2>
 <ul><li>testthat 3rd edition（<code>Config/testthat/edition: 3</code>）</li>
-<li>フィクスチャのパスは <code>tests/testthat/helper-fixture.R</code> の <code>type_b_fixture()</code> 経由で取る（<code><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file()</a></code> を各テストに散らさない）</li>
+<li>フィクスチャのパスは <code>tests/testthat/helper-fixture.R</code> の <code>type_b_fixture()</code> / <code>type_b_9col_fixture()</code> 経由で取る（<code><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file()</a></code> を各テストに散らさない）</li>
 <li>検証は「読み込みの契約」に集中する: 列名・列の型・タイムゾーン・キー・欠測の扱い・CP932 と NFKC の正規化結果</li>
 <li>
-<strong>ゼロ埋め識別子（<code>to_link_end_10m</code> 等）が character のままであること</strong>を必ず検証する。integer に落ちるとゼロが消え、静かにデータが壊れる</li>
+<strong><code>to_link_end_10m</code> が character のままであること</strong>を必ず検証する。integer に落とすと元の表記（ゼロ埋め等）が失われ、静かにデータが壊れる。なお 2017-08 / 2026-06 の実データを走査した範囲ではゼロ埋めは観測されていない。それでも character を保つのは、公開 API の型であると同時に、表記の揺れを読み込み側で潰さないため</li>
 </ul><div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'testthat::test_local()'</span></span></code></pre></div>
 </div>
 <div class="section level2">
