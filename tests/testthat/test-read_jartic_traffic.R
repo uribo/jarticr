@@ -89,3 +89,71 @@ test_that("read_jartic_traffic() warns when location_name is not CP932", {
   expect_warning(d <- read_jartic_traffic(path), "not valid CP932")
   expect_true(is.na(d$location_name))
 })
+
+test_that("read_jartic_traffic() drops the header row shipped with the file", {
+  d <- read_jartic_traffic(type_b_fixture())
+
+  # The header would arrive as an observation whose location_name is the
+  # column label; it must not be in the table at all.
+  expect_false("計測地点名称" %in% d$location_name)
+  expect_false(any(is.na(d$datetime)))
+})
+
+test_that("read_jartic_traffic() reads the 9-column layout used before 2018-02", {
+  d <- read_jartic_traffic(type_b_9col_fixture())
+
+  expect_s3_class(d, "data.table")
+  # A caller must not have to know the era: the columns are the same either way.
+  expect_named(
+    d,
+    c(
+      "datetime",
+      "source_code",
+      "location_no",
+      "location_name",
+      "meshcode10km",
+      "link_type",
+      "link_no",
+      "traffic",
+      "to_link_end_10m",
+      "link_ver"
+    )
+  )
+  expect_equal(nrow(d), 3L)
+  expect_type(d$link_ver, "integer")
+  expect_true(all(is.na(d$link_ver)))
+  expect_type(d$to_link_end_10m, "character")
+})
+
+test_that("read_jartic_traffic() parses both datetime spellings of one file", {
+  d <- read_jartic_traffic(type_b_9col_fixture())
+
+  expect_s3_class(d$datetime, "POSIXct")
+  expect_identical(attr(d$datetime, "tzone"), "Asia/Tokyo")
+  # "2017/8/1 0:00:00" (with seconds) and "2017/08/01 00:10" both appear.
+  expect_false(any(is.na(d$datetime)))
+  expect_identical(
+    d$datetime,
+    as.POSIXct(
+      c("2017-08-01 00:00:00", "2017-08-01 00:05:00", "2017-08-01 00:10:00"),
+      tz = "Asia/Tokyo"
+    )
+  )
+})
+
+test_that("read_jartic_traffic() warns when a datetime cannot be parsed", {
+  path <- tempfile(fileext = ".csv")
+  on.exit(unlink(path), add = TRUE)
+  writeLines("20221101,36,1,AAA,513376,1,101,120,0050,1", path)
+
+  expect_warning(d <- read_jartic_traffic(path), "could not be parsed")
+  expect_true(is.na(d$datetime))
+})
+
+test_that("read_jartic_traffic() rejects a file with an unexpected width", {
+  path <- tempfile(fileext = ".csv")
+  on.exit(unlink(path), add = TRUE)
+  writeLines("202211010000,36,1,AAA,513376", path)
+
+  expect_error(read_jartic_traffic(path), "9 or 10 columns")
+})
