@@ -8,8 +8,9 @@ Authors@R: c(
 Description: Reads the cross-sectional traffic volume files ("type B" open
     data) published by the Japan Road Traffic Information Center (JARTIC,
     <https://www.jartic.or.jp>) and returns them as tidy tables. The raw files
-    are distributed per prefecture as CP932-encoded CSV without a header row;
-    this package handles the encoding, column naming and type conversion, and
+    are distributed per prefecture as CP932-encoded CSV whose layout has
+    changed over the years; this package handles the encoding, the header row,
+    the older nine-column layout, column naming and type conversion, and
     provides helpers to derive an observation-location table and to look up the
     data providers.
 License: MIT + file LICENSE

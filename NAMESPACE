@@ -8,7 +8,10 @@ importFrom(data.table,
   setcolorder,
   setkey
 )
-importFrom(lubridate,ymd_hm)
+importFrom(lubridate,
+  ymd_hm,
+  ymd_hms
+)
 importFrom(stringi,
   stri_split_fixed,
   stri_trans_nfkc
