@@ -5,8 +5,12 @@ export(read_jartic_traffic)
 importFrom(data.table,
   `:=`,
   fread,
+  setcolorder,
   setkey
 )
 importFrom(lubridate,ymd_hm)
-importFrom(stringi,stri_trans_nfkc)
+importFrom(stringi,
+  stri_split_fixed,
+  stri_trans_nfkc
+)
 importFrom(stringr,str_squish)

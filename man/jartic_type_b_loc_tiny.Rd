@@ -10,12 +10,23 @@ jartic_type_b_loc_tiny(data)
 \item{data}{A type B table, as returned by \code{\link[=read_jartic_traffic]{read_jartic_traffic()}}.}
 }
 \value{
-A table of unique locations with \code{source_code}, \code{location_no},
+A \code{data.table} of unique locations with \code{source_code}, \code{location_no},
 \code{location_from}, \code{location_to} and \code{meshcode10km}.
 }
 \description{
 Reduces a type B table to one row per observation location and splits
 \code{location_name} into its start and end points on the arrow separator.
+}
+\details{
+The name is split on the \emph{first} arrow (\out{\U{2192}}) only, which makes
+the result well defined for every value:
+\itemize{
+\item no arrow: the whole name stays in \code{location_from} and \code{location_to} is
+\code{NA};
+\item more than one arrow: everything after the first arrow is kept in
+\code{location_to}, so no part of the original name is discarded;
+\item \code{NA}: both columns are \code{NA}.
+}
 }
 \examples{
 d <- read_jartic_traffic(
