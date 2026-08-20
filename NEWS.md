@@ -17,7 +17,8 @@
   with an observation is still read in full. Files published before 2018-02
   have nine columns and no link version, and are returned with the same ten
   columns as the current layout, with `link_ver` set to `NA`. A file whose
-  width is neither 9 nor 10 is an error rather than a silent misread.
+  width is neither 9 nor 10, or that holds a header row and nothing else, is
+  an error rather than a silent misread.
 * `read_jartic_traffic()` accepts the `2017/8/1 0:00:00` timestamp used by most
   providers before 2018-02, alongside the current `2026/06/01 00:00`, and warns
   when a value still fails to parse instead of leaving `NA` unannounced (#3).

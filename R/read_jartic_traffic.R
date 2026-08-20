@@ -121,14 +121,16 @@ type_b_layout <- function(path) {
     "character",
     "integer"
   )
-  first_line <- data.table::fread(
+  # Two lines, so that a file holding nothing but its header can be told
+  # apart from one that has observations.
+  head_lines <- data.table::fread(
     path,
-    nrows = 1L,
+    nrows = 2L,
     header = FALSE,
     sep = ",",
     colClasses = "character"
   )
-  n_col <- ncol(first_line)
+  n_col <- ncol(head_lines)
   if (!n_col %in% c(9L, 10L)) {
     stop(
       sprintf(
@@ -142,7 +144,15 @@ type_b_layout <- function(path) {
   # An observation always starts with a four-digit year; a header does not.
   # Compare bytes, because the header is CP932 and would not survive being
   # treated as UTF-8.
-  is_header <- !grepl("^[0-9]{4}", first_line[[1L]][[1L]], useBytes = TRUE)
+  is_header <- !grepl("^[0-9]{4}", head_lines[[1L]][[1L]], useBytes = TRUE)
+  if (is_header && nrow(head_lines) < 2L) {
+    # data.table would stop here too, but on skip= rather than on the file,
+    # and a monthly file with no observations is a failed download.
+    stop(
+      sprintf("'%s' has a header row but no observations.", basename(path)),
+      call. = FALSE
+    )
+  }
   keep <- seq_len(n_col)
   list(
     col_names = col_names[keep],

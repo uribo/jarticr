@@ -157,3 +157,38 @@ test_that("read_jartic_traffic() rejects a file with an unexpected width", {
 
   expect_error(read_jartic_traffic(path), "9 or 10 columns")
 })
+
+test_that("read_jartic_traffic() rejects a file that is only a header", {
+  path <- tempfile(fileext = ".csv")
+  on.exit(unlink(path), add = TRUE)
+  con <- file(path, open = "wb")
+  writeBin(
+    iconv(
+      paste0(
+        paste(
+          "時刻",
+          "情報源コード",
+          "計測地点番号",
+          "計測地点名称",
+          "2次メッシュコード",
+          "リンク区分",
+          "リンク番号",
+          "断面交通量",
+          "リンク終端からの距離（×10m）",
+          "リンクバージョン",
+          sep = ","
+        ),
+        "\r\n"
+      ),
+      from = "UTF-8",
+      to = "CP932",
+      toRaw = TRUE
+    )[[1]],
+    con
+  )
+  close(con)
+
+  # A monthly file with no observations is a failed download, not an empty
+  # result to pass downstream.
+  expect_error(read_jartic_traffic(path), "no observations")
+})
