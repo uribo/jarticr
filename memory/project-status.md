@@ -2,7 +2,7 @@
 name: project-status
 description: 現在の進捗・直近の作業・次のステップ
 type: project
-updated: 2026-08-20
+updated: 2026-08-21
 ---
 
 # jarticr — Status
@@ -15,8 +15,8 @@ updated: 2026-08-20
 - **[#3](https://github.com/uribo/jarticr/issues/3) 対応（2026-08-20、ブランチ `fix/typeb-header-and-9col`）**: 2018-02 より前の 9 列ファイルと秒つき日時に対応。調査の過程で、**「ヘッダ行なし」という前提そのものが実データと食い違っていた**ことが判明した（2017-08 の 51 提供元、2026-06 の現行ファイルともヘッダ行あり・CRLF）。`read_jartic_traffic()` は先頭 1 行だけを読んでヘッダの有無と列数を判定し、`skip` / `colClasses` / `col.names` を切り替える。9 列期は `link_ver = NA_integer_` で補い戻り値は常に 10 列。日時は `ymd_hm()` → NA のみ `ymd_hms()` にフォールバックし、残った NA を件数つきで警告。9/10 以外の列数はエラー。フィクスチャを実データ準拠（ヘッダ＋CRLF）に作り直し、9 列用 `inst/dummy/type_b_9col.csv` を追加。testthat の expectation 数 36 → 51（テストブロック数ではなくアサーション数）。実ファイル（akita 2017-08 の 30 万行、tokushima 2026-06）で検証済み
 - **[PR #4](https://github.com/uribo/jarticr/pull/4) の Copilot レビュー対応（2026-08-20）**: 「ヘッダのみのファイルが空の `data.table` を静かに返す」という指摘は事実誤認（data.table 1.18.4 では `fread()` が `skip=1 but the input only has 1 line` でエラーになる）。ただしエラー文言が data.table の内部由来でファイル名も本当の問題も示さないため、スニフを 1 行から 2 行に増やして明示的に弾くようにした（`'<file>' has a header row but no observations.`）。**指摘の前提は実際に走らせて検証してから受け入れる**
 - **未解決の疑問**: roxygen の「`to_link_end_10m` はゼロ埋めだから character」という根拠は実データに見当たらない（2017-08 / 2026-06 でゼロ埋めゼロ件）。型は公開 API なので据え置き、文言のみ修正した。フィクスチャの `202211010000`（コンパクト日時）と `"0050"` も実データでは未確認の合成値
+- **公開（2026-08-21）**: リポジトリを public にした。JARTIC の[利用規約](https://www.jartic.or.jp/d/opendata/riyou_kiyaku.pdf)は政府標準利用規約 2.0 型・CC BY 4.0 互換で、複製・公衆送信・翻案は商用含め自由。義務は出典記載と編集・加工の明示なので、README に「出典・利用規約」節を追加した。pkgdown サイト <https://uribo.github.io/jarticr/> は public 化と同時に Pages の build が走って解決（`gh-pages` と Pages 設定は既にあり、private が理由で 404 だった）
 - **次のステップ**:
-    - pkgdown が `gh-pages` を作った後、Settings → Pages でブランチを指定する（未設定だとサイトが 404 のままバッジだけ green になる）
     - 残る「既知の課題」（type A 対応、arrow スキーマの再導入）をユーザーと相談して優先順位付け
     - 未着手の軽微な整理: `jartic_vars` を `R/location.R` から別ファイルへ、`unique()` の冗長な `by=`、`jartic_provider` が tibble なのに tibble は Suggests
 - **ブロッカー**: なし
