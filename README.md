@@ -60,6 +60,23 @@ read_jartic_traffic(system.file("dummy", "type_b.csv", package = "jarticr"))
 - 取得・アーカイブのワークフローは別リポジトリ [uribo/jartic_storage](https://github.com/uribo/jartic_storage) にある
 - 生データはリポジトリにコミットしない（`.gitignore` で `data-raw/` 以下の CSV / ZIP を除外）
 
+## 出典・利用規約
+
+本パッケージが読み込むデータは JARTIC の[利用規約](https://www.jartic.or.jp/d/opendata/riyou_kiyaku.pdf)（クリエイティブ・コモンズ 表示 4.0 国際と互換）のもとで公開されている。複製・公衆送信・翻案は商用を含めて自由だが、公表・提供にあたっては出典の記載が求められる。
+
+> 出典：「断面交通量情報」（公益財団法人日本道路交通情報センター）<https://www.jartic.or.jp/service/opendata/>（〇年〇月〇日に利用）
+
+編集・加工したうえで公表する場合は、上記の出典とは別に加工した旨を明示する。JARTIC または国・府省等が作成したかのような態様で公表してはならない。
+
+> 「断面交通量情報」（公益財団法人日本道路交通情報センター）<https://www.jartic.or.jp/service/opendata/>を加工して作成
+
+同梱データについて。
+
+- `jartic_provider` の提供元区分（北海道のみ 5 方面に分割される等）は上記オープンデータページに基づく
+- `inst/dummy/*.csv` は配布形式を模して `data-raw/dummy_typeB.R` が生成した合成データで、JARTIC のデータそのものは含まない
+
+（利用規約は 2026-08-21 に確認した。規約は事前告知なく変更されることがある）
+
 ## 開発
 
 ```bash
