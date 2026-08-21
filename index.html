@@ -159,6 +159,26 @@
 </ul>
 </div>
 <div class="section level2">
+<h2 id="出典利用規約">出典・利用規約<a class="anchor" aria-label="anchor" href="#%E5%87%BA%E5%85%B8%E5%88%A9%E7%94%A8%E8%A6%8F%E7%B4%84"></a>
+</h2>
+<p>本パッケージが読み込むデータは JARTIC の<a href="https://www.jartic.or.jp/d/opendata/riyou_kiyaku.pdf" class="external-link">利用規約</a>（クリエイティブ・コモンズ 表示 4.0 国際と互換）のもとで公開されている。複製・公衆送信・翻案は商用を含めて自由だが、公表・提供にあたっては出典の記載が求められる。</p>
+<blockquote>
+<p>出典：「断面交通量情報」（公益財団法人日本道路交通情報センター）<a href="https://www.jartic.or.jp/service/opendata/" class="external-link uri">https://www.jartic.or.jp/service/opendata/</a>（〇年〇月〇日に利用）</p>
+</blockquote>
+<p>編集・加工したうえで公表する場合は、上記の出典とは別に加工した旨を明示する。JARTIC または国・府省等が作成したかのような態様で公表してはならない。</p>
+<blockquote>
+<p>「断面交通量情報」（公益財団法人日本道路交通情報センター）<a href="https://www.jartic.or.jp/service/opendata/" class="external-link uri">https://www.jartic.or.jp/service/opendata/</a>を加工して作成</p>
+</blockquote>
+<p>同梱データについて。</p>
+<ul>
+<li>
+<code>jartic_provider</code> の提供元区分（北海道のみ 5 方面に分割される等）は上記オープンデータページに基づく</li>
+<li>
+<code>inst/dummy/*.csv</code> は配布形式を模して <code>data-raw/dummy_typeB.R</code> が生成した合成データで、JARTIC のデータそのものは含まない</li>
+</ul>
+<p>（利用規約は 2026-08-21 に確認した。規約は事前告知なく変更されることがある）</p>
+</div>
+<div class="section level2">
 <h2 id="開発">開発<a class="anchor" aria-label="anchor" href="#%E9%96%8B%E7%99%BA"></a>
 </h2>
 <div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># ビルドとチェック</span></span>
