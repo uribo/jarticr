@@ -121,6 +121,7 @@ Rscript data-raw/dummy_typeB.R
 | scope | 対象 |
 |---|---|
 | `read` | `read_jartic_traffic()`（読み込み） |
+| `xroad` | 国土交通省 xROAD 交通量 API（`R/xroad_traffic.R`） |
 | `location` | 観測地点テーブル（`R/location.R`） |
 | `data` | 同梱データ・`data-raw/` の生成スクリプト |
 | `deps` | `DESCRIPTION` の依存 |
@@ -132,6 +133,7 @@ Rscript data-raw/dummy_typeB.R
 
 ```
 feat(read): support type A traffic files
+feat(xroad): reject specification-style quoted CQL filters
 fix(location): keep unsplit location names when the arrow is absent
 test(read): pin the CP932 decoding contract
 chore(deps): move tibble to Suggests

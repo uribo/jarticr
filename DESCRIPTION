@@ -1,18 +1,17 @@
 Package: jarticr
 Type: Package
-Title: Read and Tidy Japan Road Traffic Information Center Open Data
+Title: Read Japanese Road Traffic Volume Data
 Version: 0.0.0.9000
 Authors@R: c(
     person(given = "Shinya", family = "Uryu", email = "suika1127@gmail.com", role = c("aut", "cph", "cre"), comment = c(ORCID = "0000-0002-0493-6186"))
     )
-Description: Reads the cross-sectional traffic volume files ("type B" open
-    data) published by the Japan Road Traffic Information Center (JARTIC,
-    <https://www.jartic.or.jp>) and returns them as tidy tables. The raw files
-    are distributed per prefecture as CP932-encoded CSV whose layout has
-    changed over the years; this package handles the encoding, the header row,
-    the older nine-column layout, column naming and type conversion, and
-    provides helpers to derive an observation-location table and to look up the
-    data providers.
+Description: Reads two distinct Japanese road traffic volume sources and
+    returns them as tidy tables. It reads cross-sectional traffic volume files
+    ("type B" open data) published by the Japan Road Traffic Information Center
+    (JARTIC, <https://www.jartic.or.jp>), handling changes in their CSV layout
+    and encoding. It also builds requests for, retrieves, and parses GeoJSON or
+    JSON-encoded CSV from the xROAD traffic-volume API operated by the Ministry
+    of Land, Infrastructure, Transport and Tourism.
 License: MIT + file LICENSE
 URL: https://uribo.github.io/jarticr/, https://github.com/uribo/jarticr
 BugReports: https://github.com/uribo/jarticr/issues
@@ -20,9 +19,11 @@ Encoding: UTF-8
 LazyData: true
 ByteCompile: true
 Depends: 
-    R (>= 2.10)
+    R (>= 4.1)
 Imports:
     data.table,
+    httr2,
+    jsonlite,
     lubridate,
     stringi,
     stringr

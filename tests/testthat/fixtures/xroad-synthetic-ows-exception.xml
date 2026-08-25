@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8"?><ows:ExceptionReport xmlns:ows="http://www.opengis.net/ows/1.1"><ows:Exception exceptionCode="InvalidParameterValue" locator="typeName"><ows:ExceptionText>Feature type :t_travospublic_measure_50m unknown</ows:ExceptionText></ows:Exception></ows:ExceptionReport>
