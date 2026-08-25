@@ -8,28 +8,28 @@ updated: 2026-08-25
 ## 引き継ぎ（HANDOFF）
 
 **現在採用している方針**（採用した方法と理由）:
-xroad（国土交通省交通量 API）サポートを追加。JARTIC type B と異なる第 2 データソース。実データプローブ（19 リクエスト）で API 仕様を確認し、その結果に基づいて実装。Codex による実装 2 ラウンド、Claude によるレビュー＋プローブ設計。新規関数 xroad_build_request(), xroad_perform_request(), xroad_parse_traffic(), xroad_get_traffic()。
+xroad（国土交通省 交通量 API）クライアントは実装・マージ済み。挙動は公式仕様書ではなく**実機を叩いて録画した 19 本の応答**に合わせてある。仕様書は 4 か所で実機と食い違っていた: (1) 例示されている引用符つき CQL は HTTP 400 で通らない、(2) `count` は無視され打ち切りは起きない（実際の限界は約 6MB で、しかも HTTP 200 で失敗が返る）、(3) プロパティ名は PDF から転記できない（`収集時間フラグ（5分間／1時間）` にスペースは入らない）、(4) レイヤは 4 種だがスキーマは 3 種。`datetime` は `時間帯` ではなく `時間コード` から導出している。
 
 **次に行う作業**（1 つだけ）:
-round 3 プローブで form 4（CCTV 1 時間値）を検証し、フィクスチャと列マップに反映してからコミット。commit 先（main 直接 or ブランチ＋PR）と tag はユーザー決定待ち。
+引継ぎ B（`2607_tokushima_tourism_flow`）へ `991c7b0` を渡し、阿波おどり期と比較用の平常週の 5 分値を実取得する。5 分値は 2026-09-12〜15 ごろ失効する。ブリーフのチェックポイントは有効で、**2026-09-05 時点で end-to-end の取得が動いていなければ、パッケージ化を中断してあちらのプロジェクト内の最小スクリプトでバイトを確保する**（データは代替不能、パッケージは代替可能）。
 
 **試して失敗したこと**:
-httptest2 の Suggests 追加を検討したが、httr2 の with_mocked_responses() で充分なため不採用（ユーザーに確認済み）。
+httptest2 を Suggests に足すことを検討したが、httr2 の `with_mocked_responses()` で足りるので不採用（ユーザー確認済み）。
 
 **未確認の項目**:
-form 4 の 時間帯 フォーマット（仕様書 2 桁 vs hhmm の可能性）。GitHub Actions R-CMD-check 未実行。round 3 プローブスクリプト（scratchpad に ready）未実行。
+様式 4 のテストは録画から抜いた 2 件に留まり、1 時間値 CCTV の欠測パターンを広く踏んでいない。
 
 **最後に実行した検証と結果**:
-testthat::test_local() → 122 passing, 0 failures, 0 skips。R CMD check --no-manual → Status: OK。air format --check → clean。記録した golden response で acceptance table を再現（4 駅、座標と上下通行量）。
+[PR #5](https://github.com/uribo/jarticr/pull/5) を作成し、Copilot の指摘 4 件に返信・修正して resolve、`991c7b0` として main へマージ（2026-08-25 17:47 JST）。GitHub Actions は 6 ジョブすべて通過（Ubuntu の release / devel / oldrel-1、macOS、Windows、pkgdown）。`oldrel-1` が通ったことで `Depends: R (>= 4.1)` への引き上げも実地で確認できた。`testthat::test_local()` は 137 通過・失敗 0・skip 0、`R CMD check` は `Status: OK`。`xroad_bbox()` と `xroad_digits()` に `decimal.mark = "."` を固定し、`OutDec = ","` 下でも golden フィルタがバイト一致することを回帰テストで押さえた。
 
 # jarticr — Status
 
-- **現在フェーズ**: 実装（未 CRAN、GitHub インストールのみ）。第 2 データソース（xroad）のサポート追加中
+- **現在フェーズ**: 実装完了（未 CRAN、GitHub インストールのみ）。第 2 データソース（xroad）のサポート追加完了・マージ済み
 - **直近の作業**:
-    - xroad API（国土交通省交通量 API）のサポート追加（2026-08-25）。新規ファイル R/xroad_traffic.R、data-raw/xroad_fixtures.R、tests/testthat/test-xroad_traffic.R、tests/testthat/fixtures/（9 ファイル）。新規関数 xroad_build_request(), xroad_perform_request(), xroad_parse_traffic(), xroad_get_traffic()。DESCRIPTION に httr2 と jsonlite を追加、Depends を R >= 4.1 に上げた（httr2 の要件）。README / NEWS / NAMESPACE / man/ も更新。
+    - xroad API（国土交通省交通量 API）のサポート追加（[PR #5](https://github.com/uribo/jarticr/pull/5)・2026-08-25 マージ）。新規ファイル R/xroad_traffic.R、data-raw/xroad_fixtures.R、tests/testthat/test-xroad_traffic.R、tests/testthat/fixtures/（9 ファイル）。新規関数 xroad_build_request(), xroad_perform_request(), xroad_parse_traffic(), xroad_get_traffic()。DESCRIPTION に httr2 と jsonlite を追加、Depends を R >= 4.1 に上げた（httr2 の要件）。README / NEWS / NAMESPACE / man/ も更新。CLAUDE.md に xroad scope を追加。
     - 実データプローブ（19 リクエスト）により API 仕様を確認。frozen PDF 仕様と異なる事実を 9 件記録: (1) CQL で double quote は AWS API Gateway で reject（unquoted のみ可）、(2) WFS count パラメータは無視（ページング実装なし）、(3) 実制限は約 6 MB 応答上限で HTTP 200 + JSON error body、(4) 結果ゼロと時間切れは同じ empty FeatureCollection（区別不可）、(5) outputFormat=csv は JSON エスケープ CSV 文字列で JSON 量 1/3、(6) フィールド名は PDF 転記でなく実応答から取得（スペース混在など）、(7) null count は NA_integer_、CCTV フラグは 3 値("0", "1", "")、(8) レイヤは 4 種だがスキーマは **3 種**（様式 1・2 の常設トラカンが同一、様式 3 の CCTV 5 分値がカメラ状態フラグ 10 種を持ち、様式 4 の CCTV 1 時間値はカメラフラグを一切持たず `5分欠測処理フラグ` を持つ第 3 のスキーマ。「様式 3・4 が同一スキーマ」は Claude のブリーフの誤りで、Codex の指摘が正しかった）、(9) CCTV 観測地点は Kinki だけでなく Shikoku にも 78 件。
-    - 検証: testthat::test_local() 122 passing、R CMD check --no-manual Status: OK、air format --check clean。golden response で acceptance table 再現（4 駅、座標と上下通行量）。CQL byte-identical 確認。
-    - 未確定: form 4（CCTV 1 時間値）のスキーマは仕様書由来（未 recorded）。時間帯フォーマット（2 桁 vs hhmm）未確認。round 3 プローブスクリプト ready だが未実行（scratchpad path）。
+    - 検証: testthat::test_local() 137 passing、R CMD check Status: OK、air format --check clean。golden response で acceptance table 再現。CQL byte-identical 確認。GitHub Actions all six jobs passed (Ubuntu release/devel/oldrel-1, macOS, Windows, pkgdown)。
+    - 様式 4（CCTV 1 時間値）を録画で確定（第 3 ラウンドのプローブ）。`時間帯` は 2 桁時（`19`）で返る一方 `時間コード` は `hhmm`（`202608131900`）なので、`hhmm` 前提で組み立てると 19:00 が 00:19 になる。`datetime` は `時間コード` から導出して回避済み。リクエスト側の `時間コード` は様式 4 でも 12 桁必須（10 桁は 0 件）。`5分欠測処理フラグ` の実測値は `"0"` と `"2"` で、仕様書の `"1"`/`"2"` と食い違うため値域の検証はかけていない。欠測は JSON `null` で `NA_integer_` に落とす。`開発建設部／都道府県コード` は中部で埋まる（`"24"`・地方整備局等番号 85）
     - 上記の直前のセッション（2026-08-20～21）の内容は以下:
     - リポジトリ整備（[PR #1](https://github.com/uribo/jarticr/pull/1) マージ済み）。DESCRIPTION の実記入、.Rbuildignore / .gitignore 拡充、air・.vscode・.claude・.codex の設定、R-CMD-check / pkgdown ワークフロー、testthat 一式（CP932 フィクスチャ込み）、README / NEWS / CLAUDE.md / AGENTS.md / memory を追加。`R/read_jartic_trafifc.R` の綴り誤りを修正
     - コード全体の見直し（2026-08-20）。`jartic_type_b_loc_tiny()` の `tidyr::separate()` を `stringi::stri_split_fixed(n = 2L)` に置換し、`tidyr` を Imports から撤去。**`separate()` は data.table を plain `data.frame` に落としていたため、公開 API の契約（data.table を返す）に既に違反していた**（CLAUDE.md「既知の課題」の前提が逆だった）。矢印なし・複数矢印・NA の挙動を契約として明文化。`read_jartic_traffic()` に `header = FALSE` を明示（**これは誤り。実データは全期間でヘッダ行を持つため、この変更で現行月のファイルすら読めなくなった。翌日 [#3](https://github.com/uribo/jarticr/issues/3) の対応で先頭行のスニフに置き換えた**）、`iconv` の `to` を `"UTF-8"` に正し、CP932 として不正なバイトを警告するようにした。テストを 28 → 36 に拡充（戻り値クラス・分割の境界・ヘッダなし契約・CP932 警告）
@@ -39,10 +39,9 @@ testthat::test_local() → 122 passing, 0 failures, 0 skips。R CMD check --no-m
 - **未解決の疑問**: roxygen の「`to_link_end_10m` はゼロ埋めだから character」という根拠は実データに見当たらない（2017-08 / 2026-06 でゼロ埋めゼロ件）。型は公開 API なので据え置き、文言のみ修正した。フィクスチャの `202211010000`（コンパクト日時）と `"0050"` も実データでは未確認の合成値
 - **公開（2026-08-21）**: リポジトリを public にした。JARTIC の[利用規約](https://www.jartic.or.jp/d/opendata/riyou_kiyaku.pdf)は政府標準利用規約 2.0 型・CC BY 4.0 互換で、複製・公衆送信・翻案は商用含め自由。義務は出典記載と編集・加工の明示なので、README に「出典・利用規約」節を追加した。pkgdown サイト <https://uribo.github.io/jarticr/> は public 化と同時に Pages の build が走って解決（`gh-pages` と Pages 設定は既にあり、private が理由で 404 だった）
 - **未対応・課題**:
-    - **xroad round 3 プローブ（form 4 CCTV 1 時間値）**: scratchpad の probe/probe_xroad_round3.sh が ready だが未実行。セッション終了時に path が失われるため再作成の可能性あり。結果取得後、フィクスチャと列マップ（現在は provisional spec-derived）を更新。
-    - **form 4 の 時間帯 フォーマット**: 仕様書は 2 桁 hour（0-23）と記述、他は hhmm（form 2 実績 1900）。実データで確認まで、実装は datetime 導出を 時間コード 由来にして hhmm 仮定を回避（実解析は pending）。
-    - **GitHub Actions R-CMD-check**: 何も push されていないため未実行。ローカル check は Status: OK。
-    - **hard checkpoint**: 2026-09-05 までにエンドツーエンド fetching が機能しない場合、packaging を abandoned にして 2607_tokushima_tourism_flow 内に minimal script として実装。理由: 阿波おどり期（2026-08-12～15）の 5 分値有効期限が 2026-09-12～15 ごろで、代替不能な履歴データ。
+    - **プローブの保管場所**: 実機を叩いた 19 本の応答と `probe_xroad_round1〜3.sh` は `2607_tokushima_tourism_flow/data-raw/jartic-open-traffic/probe-2026-08-25/` に `SHA256SUMS` 付きで退避済み（gitignored。本パッケージのフィクスチャはそこから抜いたもの）
+    - **ハードチェックポイント**: 2026-09-05 までに end-to-end の取得が動いていなければ、パッケージ化を中断して `2607_tokushima_tourism_flow` 内の最小スクリプトでバイトを確保する。理由: 阿波おどり期（2026-08-12〜15）の 5 分値は 2026-09-12〜15 ごろ失効し、時間を遡って取り直せない
+    - **様式 4 のテストの薄さ**: 録画から抜いた 2 件しか使っておらず、1 時間値 CCTV の欠測パターンやカメラ状態フラグの分布を広く踏んでいない
     - 残る「既知の課題」（type A 対応、arrow スキーマの再導入）はユーザーと相談して優先順位付け
     - 未着手の軽微な整理: `jartic_vars` を `R/location.R` から別ファイルへ、`unique()` の冗長な `by=`、`jartic_provider` が tibble なのに tibble は Suggests
 
