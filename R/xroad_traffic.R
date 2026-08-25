@@ -144,7 +144,7 @@ xroad_build_request <- function(
     cql_filter = cql_filter
   )
   xroad_assert_positive_number(throttle_seconds, "throttle_seconds")
-  xroad_assert_positive_integer(max_tries, "max_tries")
+  max_tries <- xroad_assert_positive_integer(max_tries, "max_tries")
 
   req <- httr2::request("https://api.jartic-open-traffic.org/geoserver") |>
     httr2::req_url_query(
@@ -544,7 +544,7 @@ xroad_bbox <- function(bbox) {
       call. = FALSE
     )
   }
-  format(bbox, scientific = FALSE, trim = TRUE)
+  format(bbox, scientific = FALSE, trim = TRUE, decimal.mark = ".")
 }
 
 xroad_digits <- function(value, name) {
@@ -555,7 +555,12 @@ xroad_digits <- function(value, name) {
     if (any(!is.finite(value)) || any(value != floor(value))) {
       stop(sprintf("'%s' must contain whole numbers.", name), call. = FALSE)
     }
-    value <- format(value, scientific = FALSE, trim = TRUE)
+    value <- format(
+      value,
+      scientific = FALSE,
+      trim = TRUE,
+      decimal.mark = "."
+    )
   } else {
     value <- as.character(value)
   }

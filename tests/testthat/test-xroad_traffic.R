@@ -30,6 +30,27 @@ test_that("xroad_build_request() constructs the recorded working CQL exactly", {
   expect_identical(req$policies$throttle_realm, "jarticr-xroad-traffic")
 })
 
+test_that("xroad_build_request() is independent of the OutDec option", {
+  old_options <- options(OutDec = ",")
+  on.exit(options(old_options), add = TRUE)
+
+  req <- xroad_build_request(
+    interval = "5m",
+    counter_type = "fixed",
+    road_type = 3,
+    time_code = 202608131900,
+    bbox = c(134.45, 33.95, 134.70, 34.15)
+  )
+
+  expect_identical(
+    xroad_request_cql(req),
+    paste0(
+      "道路種別=3 AND 時間コード=202608131900 AND ",
+      "BBOX(ジオメトリ,134.45,33.95,134.70,34.15,'EPSG:4326')"
+    )
+  )
+})
+
 test_that("xroad_build_request() selects layers and constructs ranges", {
   req <- xroad_build_request(
     interval = "1h",
