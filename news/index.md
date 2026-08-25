@@ -2,6 +2,15 @@
 
 ## jarticr 0.0.0.9000
 
+- Added an offline-testable client for the four xROAD traffic-volume API
+  layers, with typed CQL construction, separate HTTP execution, GeoJSON
+  and JSON-encoded CSV parsing, three layer schemas, typed `data.table`
+  results, three-state CCTV flags, body-based API failure detection,
+  transient-only retries, and request throttling. Recorded probe
+  responses pin the deployed property names, HTTP 200 payload-cap error,
+  invalid quoted-CQL response, empty-result ambiguity, CSV coordinate
+  precision, and form 4’s two-digit `time_slot`, 12-digit request
+  `time_code`, and observed `"0"`/`"2"` processing flags.
 - [`read_jartic_traffic()`](https://uribo.github.io/jarticr/reference/read_jartic_traffic.md)
   reads a JARTIC type B (cross-sectional traffic volume) CSV file,
   converting it from CP932 and returning a `data.table` keyed on

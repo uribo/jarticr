@@ -8,3 +8,11 @@
   : Create the observation location table for type B
 - [`read_jartic_traffic()`](https://uribo.github.io/jarticr/reference/read_jartic_traffic.md)
   : Read a JARTIC type B traffic file
+- [`xroad_build_request()`](https://uribo.github.io/jarticr/reference/xroad_build_request.md)
+  : Build an xROAD traffic-volume API request
+- [`xroad_get_traffic()`](https://uribo.github.io/jarticr/reference/xroad_get_traffic.md)
+  : Retrieve xROAD traffic-volume data
+- [`xroad_parse_traffic()`](https://uribo.github.io/jarticr/reference/xroad_parse_traffic.md)
+  : Parse an xROAD traffic-volume API response
+- [`xroad_perform_request()`](https://uribo.github.io/jarticr/reference/xroad_perform_request.md)
+  : Perform an xROAD traffic-volume API request

@@ -10,12 +10,11 @@
 Source:
 [`DESCRIPTION`](https://github.com/uribo/jarticr/blob/main/DESCRIPTION)
 
-Uryu S (2026). *jarticr: Read and Tidy Japan Road Traffic Information
-Center Open Data*. R package version 0.0.0.9000,
-<https://uribo.github.io/jarticr/>.
+Uryu S (2026). *jarticr: Read Japanese Road Traffic Volume Data*. R
+package version 0.0.0.9000, <https://uribo.github.io/jarticr/>.
 
     @Manual{,
-      title = {jarticr: Read and Tidy Japan Road Traffic Information Center Open Data},
+      title = {jarticr: Read Japanese Road Traffic Volume Data},
       author = {Shinya Uryu},
       year = {2026},
       note = {R package version 0.0.0.9000},

@@ -11,5 +11,9 @@
 <url><loc>https://uribo.github.io/jarticr/reference/jartic_provider.html</loc></url>
 <url><loc>https://uribo.github.io/jarticr/reference/jartic_type_b_loc_tiny.html</loc></url>
 <url><loc>https://uribo.github.io/jarticr/reference/read_jartic_traffic.html</loc></url>
+<url><loc>https://uribo.github.io/jarticr/reference/xroad_build_request.html</loc></url>
+<url><loc>https://uribo.github.io/jarticr/reference/xroad_get_traffic.html</loc></url>
+<url><loc>https://uribo.github.io/jarticr/reference/xroad_parse_traffic.html</loc></url>
+<url><loc>https://uribo.github.io/jarticr/reference/xroad_perform_request.html</loc></url>
 </urlset>
 

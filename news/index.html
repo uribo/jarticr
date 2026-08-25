@@ -34,7 +34,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.0.9000" id="jarticr-0009000">jarticr 0.0.0.9000<a class="anchor" aria-label="anchor" href="#jarticr-0009000"></a></h2>
-<ul><li>
+<ul><li>Added an offline-testable client for the four xROAD traffic-volume API layers, with typed CQL construction, separate HTTP execution, GeoJSON and JSON-encoded CSV parsing, three layer schemas, typed <code>data.table</code> results, three-state CCTV flags, body-based API failure detection, transient-only retries, and request throttling. Recorded probe responses pin the deployed property names, HTTP 200 payload-cap error, invalid quoted-CQL response, empty-result ambiguity, CSV coordinate precision, and form 4’s two-digit <code>time_slot</code>, 12-digit request <code>time_code</code>, and observed <code>"0"</code>/<code>"2"</code> processing flags.</li>
+<li>
 <code><a href="../reference/read_jartic_traffic.html">read_jartic_traffic()</a></code> reads a JARTIC type B (cross-sectional traffic volume) CSV file, converting it from CP932 and returning a <code>data.table</code> keyed on <code>datetime</code> (JST).</li>
 <li>
 <code><a href="../reference/jartic_type_b_loc_tiny.html">jartic_type_b_loc_tiny()</a></code> derives the observation-location table by splitting <code>location_name</code> into <code>location_from</code> / <code>location_to</code>. The split happens on the first arrow only and returns a <code>data.table</code>, so the class matches the rest of the API; names without an arrow keep the whole value in <code>location_from</code>, and names with more than one arrow keep the remainder in <code>location_to</code> instead of discarding it. This drops the <code>tidyr</code> dependency.</li>
