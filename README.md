@@ -6,7 +6,7 @@
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-jarticr は、日本の道路交通量に関する2つの異なるデータ源を R で扱うためのパッケージ。JARTIC の断面交通量情報（type B）ファイルの読み込みと、国土交通省 xROAD 交通量 API のリクエスト作成・取得・GeoJSON／CSV 解析を提供する。いずれも `data.table` を返すが、データの主体、内容、利用規約、必要な出典表記は別である。
+jarticr は、日本の道路交通量に関する2つの異なるデータ源を R で扱うためのパッケージ。JARTIC の断面交通量情報（type B）ファイルの読み込みと、国土交通省 xROAD 交通量 API のリクエスト作成・取得・GeoJSON／CSV 解析を提供する。データの読み込み・解析を担う関数は `data.table` を返すが、2つのデータ源では主体、内容、利用規約、必要な出典表記が異なる。
 
 ## 2つのデータ源
 
