@@ -1,9 +1,16 @@
 # Rebuild the offline xROAD fixtures from the read-only probe archive recorded
 # on 2026-08-25. Run from the package root.
-source_dir <- file.path(
-  "/Users/suryu/Documents/1_Projects/2607_tokushima_tourism_flow",
-  "data-raw/jartic-open-traffic/probe-2026-08-25"
-)
+probe_dir_variable <- "JARTICR_XROAD_PROBE_DIR"
+source_dir <- Sys.getenv(probe_dir_variable, unset = "")
+if (!nzchar(source_dir) || !dir.exists(source_dir)) {
+  stop(
+    paste0(
+      probe_dir_variable,
+      " must point to the recorded xROAD probe archive from 2026-08-25, ",
+      "containing SHA256SUMS and the recorded response bodies."
+    )
+  )
+}
 fixture_dir <- file.path("tests", "testthat", "fixtures")
 dir.create(fixture_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -16,6 +23,28 @@ recorded <- c(
   "xroad-payload-cap.json" = "r9_oversize.json",
   "xroad-bad-request.json" = "p1_golden_geojson.json"
 )
+subset_sources <- c(
+  "r1_range_1h.json",
+  "r5_cctv_5m.json",
+  "r6_cctv_kinki.json",
+  "t1_form4_shikoku.json",
+  "t3_form4_kinki.json"
+)
+required_sources <- c("SHA256SUMS", unname(recorded), subset_sources)
+missing_sources <- required_sources[
+  !file.exists(file.path(source_dir, required_sources))
+]
+if (length(missing_sources) > 0L) {
+  stop(
+    paste0(
+      probe_dir_variable,
+      " must point to the recorded xROAD probe archive from 2026-08-25. ",
+      "Missing required files: ",
+      paste(missing_sources, collapse = ", "),
+      "."
+    )
+  )
+}
 copied <- file.copy(
   file.path(source_dir, unname(recorded)),
   file.path(fixture_dir, names(recorded)),
